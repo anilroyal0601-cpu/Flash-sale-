@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flash Sale</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#080611;
+  color:#fff;
+  min-height:100vh;
+}
+
+header{
+  background:linear-gradient(135deg,#211044,#7226d9);
+  padding:24px 18px;
+  text-align:center;
+  box-shadow:0 5px 25px #0008;
+}
+
+header h1{
+  font-size:30px;
+}
+
+header p{
+  margin-top:7px;
+  color:#ddd;
+}
+
+.container{
+  width:94%;
+  max-width:600px;
+  margin:22px auto;
+}
+
+.card{
+  background:#12101c;
+  border:1px solid #302449;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 8px 30px #0007;
+}
+
+h2{
+  color:#c084fc;
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  margin:13px 0 7px;
+  color:#ddd;
+  font-size:14px;
+}
+
+input,select{
+  width:100%;
+  padding:14px;
+  background:#090812;
+  color:#fff;
+  border:1px solid #403252;
+  border-radius:10px;
+  outline:none;
+  font-size:15px;
+}
+
+input:focus,select:focus{
+  border-color:#a855f7;
+}
+
+.price-box{
+  margin-top:18px;
+  padding:18px;
+  text-align:center;
+  border-radius:13px;
+  background:linear-gradient(135deg,#29104f,#171022);
+  border:1px solid #6d28d9;
+}
+
+.price-title{
+  color:#bbb;
+  font-size:14px;
+}
+
+.price{
+  color:#d8b4fe;
+  font-size:30px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:15px;
+  margin-top:15px;
+  color:#fff;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  background:linear-gradient(135deg,#7c3aed,#a855f7);
+}
+
+.pay-btn{
+  background:linear-gradient(135deg,#16a34a,#22c55e);
+}
+
+.dark-btn{
+  background:#292333;
+}
+
+.result{
+  display:none;
+  margin-top:18px;
+  padding:17px;
+  border-radius:12px;
+  background:#0c2918;
+  border:1px solid #22c55e;
+}
+
+.order-id{
+  color:#86efac;
+  font-size:21px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.pending{
+  color:#facc15;
+  font-weight:bold;
+}
+
+footer{
+  text-align:center;
+  color:#777;
+  font-size:13px;
+  padding:25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>⚡ Flash Sale</h1>
+  <p>Social Media Promotion Services</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>🛒 Place Your Order</h2>
+
+<label>Service</label>
+
+<select id="service" onchange="calculatePrice()">
+
+  <option value="Followers" data-price="300">
+    Followers — ₹300 / 1K
+  </option>
+
+  <option value="Likes" data-price="150">
+    Likes — ₹150 / 1K
+  </option>
+
+  <option value="Comments" data-price="150">
+    Comments — ₹150 / 1K
+  </option>
+
+  <option value="Views" data-price="10">
+    Views — ₹10 / 1K
+  </option>
+
+  <option value="Shares" data-price="50">
+    Shares — ₹50 / 1K
+  </option>
+
+  <option value="Saves" data-price="100">
+    Saves — ₹100 / 1K
+  </option>
+
+</select>
+
+<label>Quantity</label>
+
+<input
+  type="number"
+  id="quantity"
+  value="1000"
+  min="1000"
+  step="1000"
+  oninput="calculatePrice()"
+  placeholder="Example: 1000"
+>
+
+<label>Instagram URL</label>
+
+<input
+  type="url"
+  id="instagram"
+  placeholder="https://instagram.com/username"
+>
+
+<label>Your Name</label>
+
+<input
+  type="text"
+  id="name"
+  placeholder="Enter your name"
+>
+
+<label>Phone Number</label>
+
+<input
+  type="tel"
+  id="phone"
+  maxlength="10"
+  placeholder="10 digit phone number"
+>
+
+<label>Email</label>
+
+<input
+  type="email"
+  id="email"
+  placeholder="Enter email"
+>
+
+<div class="price-box">
+
+  <div class="price-title">
+    Total Amount
+  </div>
+
+  <div class="price" id="totalPrice">
+    ₹300
+  </div>
+
+</div>
+
+<button class="pay-btn" onclick="createOrderAndPay()">
+  💳 Pay Now
+</button>
+
+<div class="small-note">
+  Pay Now click chesina tarvata UPI payment app open avvadaniki
+  try chestundi. Payment ni payment app lone confirm cheyyandi.
+</div>
+
+<div class="result" id="orderResult">
+
+  <div>✅ Order Created</div>
+
+  <br>
+
+  <div>Order ID:</div>
+
+  <div class="order-id" id="createdOrderId"></div>
+
+  <br>
+
+  <div>
+    Amount:
+    <b id="createdAmount"></b>
+  </div>
+
+  <br>
+
+  <div>
+    Payment:
+    <span class="pending">
+      Pending
+    </span>
+  </div>
+
+  <button class="dark-btn" onclick="copyOrderId()">
+    📋 Copy Order ID
+  </button>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🔎 Track Order</h2>
+
+<label>Order ID</label>
+
+<input
+  type="text"
+  id="trackId"
+  placeholder="Example: FS12345678"
+>
+
+<button onclick="trackOrder()">
+  🔍 Track Order
+</button>
+
+<div id="trackResult"></div>
+
+</div>
+
+</div>
+
+<footer>
+© 2026 Flash Sale
+</footer>
+
+
+<script>
+
+const UPI_ID = "9550396457-2@ybl";
+
+
+function calculatePrice(){
+
+  const service =
+    document.getElementById("service");
+
+  const quantity =
+    Number(
+      document.getElementById("quantity").value
+    );
+
+  const pricePer1000 =
+    Number(
+      service.options[
+        service.selectedIndex
+      ].dataset.price
+    );
+
+  if(!quantity || quantity <= 0){
+
+    document.getElementById(
+      "totalPrice"
+    ).innerText = "₹0";
+
+    return 0;
+  }
+
+  const total =
+    (quantity / 1000) * pricePer1000;
+
+  document.getElementById(
+    "totalPrice"
+  ).innerText =
+    "₹" + total.toFixed(2);
+
+  return total;
+}
+
+
+function createOrderAndPay(){
+
+  const service =
+    document.getElementById("service").value;
+
+  const quantity =
+    Number(
+      document.getElementById("quantity").value
+    );
+
+  const instagram =
+    document.getElementById("instagram")
+    .value.trim();
+
+  const name =
+    document.getElementById("name")
+    .value.trim();
+
+  const phone =
+    document.getElementById("phone")
+    .value.trim();
+
+  const email =
+    document.getElementById("email")
+    .value.trim();
+
+  const amount =
+    calculatePrice();
+
+  if(quantity < 1000){
+
+    alert("❌ Minimum quantity 1000.");
+
+    return;
+  }
+
+  if(!instagram){
+
+    alert("❌ Instagram URL enter cheyyandi.");
+
+    return;
+  }
+
+  if(!name){
+
+    alert("❌ Name enter cheyyandi.");
+
+    return;
+  }
+
+  if(!/^[0-9]{10}$/.test(phone)){
+
+    alert("❌ Valid 10 digit phone number enter cheyyandi.");
+
+    return;
+  }
+
+  if(!email){
+
+    alert("❌ Email enter cheyyandi.");
+
+    return;
+  }
+
+  if(amount <= 0){
+
+    alert("❌ Invalid amount.");
+
+    return;
+  }
+
+  const orderId =
+    "FS" +
+    Date.now().toString().slice(-8);
+
+  const order = {
+
+    orderId: orderId,
+
+    service: service,
+
+    quantity: quantity,
+
+    amount: amount,
+
+    instagram: instagram,
+
+    name: name,
+
+    phone: phone,
+
+    email: email,
+
+    paymentStatus: "Pending",
+
+    orderStatus: "Pending",
+
+    createdAt: new Date().toLocaleString()
+
+  };
+
+  let orders =
+    JSON.parse(
+      localStorage.getItem(
+        "flashSaleOrders"
+      )
+    ) || [];
+
+  orders.push(order);
+
+  localStorage.setItem(
+    "flashSaleOrders",
+    JSON.stringify(orders)
+  );
+
+  document.getElementById(
+    "createdOrderId"
+  ).innerText = orderId;
+
+  document.getElementById(
+    "createdAmount"
+  ).innerText =
+    "₹" + amount.toFixed(2);
+
+  document.getElementById(
+    "orderResult"
+  ).style.display = "block";
+
+  const upiUrl =
+    "upi://pay" +
+    "?pa=" +
+    encodeURIComponent(UPI_ID) +
+
+    "&pn=" +
+    encodeURIComponent("Flash Sale") +
+
+    "&am=" +
+    encodeURIComponent(
+      amount.toFixed(2)
+    ) +
+
+    "&cu=INR" +
+
+    "&tn=" +
+    encodeURIComponent(
+      "Flash Sale Order " + orderId
+    );
+
+  try{
+
+    window.location.href = upiUrl;
+
+  }catch(error){
+
+    showUPIFallback(
+      amount,
+      orderId
+    );
+
+  }
+
+}
+
+
+function showUPIFallback(
+  amount,
+  orderId
+){
+
+  alert(
+    "UPI payment app open avvakapothe:\n\n" +
+    "UPI ID: " + UPI_ID +
+    "\nAmount: ₹" +
+    amount.toFixed(2) +
+    "\nOrder ID: " +
+    orderId
+  );
+
+}
+
+
+function copyOrderId(){
+
+  const element =
+    document.getElementById(
+      "createdOrderId"
+    );
+
+  if(!element){
+
+    alert("Order ID not found.");
+
+    return;
+  }
+
+  const id =
+    element.innerText ||
+    element.textContent;
+
+  const textArea =
+    document.createElement(
+      "textarea"
+    );
+
+  textArea.value = id;
+
+  textArea.style.position =
+    "fixed";
+
+  textArea.style.top = "0";
+
+  textArea.style.left =
+    "-9999px";
+
+  document.body.appendChild(
+    textArea
+  );
+
+  textArea.focus();
+
+  textArea.select();
+
+  let copied = false;
+
+  try{
+
+    copied =
+      document.execCommand(
+        "copy"
+      );
+
+  }catch(error){
+
+    copied = false;
+
+  }
+
+  document.body.removeChild(
+    textArea
+  );
+
+  if(copied){
+
+    alert(
+      "✅ Order ID copied:\n" +
+      id
+    );
+
+  }else{
+
+    alert(
+      "📋 Order ID:\n\n" +
+      id +
+      "\n\nPlease copy it manually."
+    );
+
+  }
+
+}
+
+
+function trackOrder(){
+
+  const id =
+    document.getElementById(
+      "trackId"
+    ).value.trim();
+
+  if(!id){
+
+    alert(
+      "❌ Order ID enter cheyyandi."
+    );
+
+    return;
+  }
+
+  const orders =
+    JSON.parse(
+      localStorage.getItem(
+        "flashSaleOrders"
+      )
+    ) || [];
+
+  const order =
+    orders.find(
+      function(item){
+
+        return (
+          item.orderId.toLowerCase() ===
+          id.toLowerCase()
+        );
+
+      }
+    );
+
+  const result =
+    document.getElementById(
+      "trackResult"
+    );
+
+  if(!order){
+
+    result.innerHTML = `
+
+      <div
+        class="result"
+        style="
+          display:block;
+          background:#321010;
+          border-color:#ef4444;
+        "
+      >
+
+        ❌ Order not found.
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+  result.innerHTML = `
+
+    <div
+      class="result"
+      style="display:block;"
+    >
+
+      <b>Order ID:</b>
+      ${escapeHTML(order.orderId)}
+
+      <br><br>
+
+      <b>Service:</b>
+      ${escapeHTML(order.service)}
+
+      <br><br>
+
+      <b>Quantity:</b>
+      ${order.quantity}
+
+      <br><br>
+
+      <b>Amount:</b>
+      ₹${Number(order.amount).toFixed(2)}
+
+      <br><br>
+
+      <b>Payment:</b>
+      <span class="pending">
+        ${escapeHTML(order.paymentStatus)}
+      </span>
+
+      <br><br>
+
+      <b>Order Status:</b>
+      <span class="pending">
+        ${escapeHTML(order.orderStatus)}
+      </span>
+
+    </div>
+
+  `;
+
+}
+
+
+function escapeHTML(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+calculatePrice();
+
+</script>
+
+</body>
+</html>
